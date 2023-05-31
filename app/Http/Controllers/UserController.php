@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\User\UserLogin;
-use App\Services\User\VerificationPremium\UserSendCode;
+use App\Models\User;
+
 use App\Services\User\UserRegister;
-use App\Services\User\VerificationPremium\UserVerifi;
+use App\Http\Controllers\EmailVerificationController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Traits\JsonRespondController;
 use Exception;
 use Illuminate\Http\Request;
@@ -75,17 +76,29 @@ class UserController extends Controller
         }
     }
 
-    public function sendcode(): Response
-    {
-        return app(UserSendCode::class)->execute();
-    }
+    // public function sendCode(): Response
+    // {
+    //     return app(UserSendCode::class)->execute();
+    // }
 
-    public function verificode(Request $request)
-    {
-        try {
-            return app(UserVerifi::class)->execute($request->all());
-        } catch (ValidationException $exception) {
-            return $this->respondValidatorFailed($exception->validator);
-        }
-    }
+    // public function verifyCode(Request $request)
+    // {
+    //     try {
+    //         return app(UserVerify::class)->execute($request->all());
+    //     } catch (ValidationException $exception) {
+    //         return $this->respondValidatorFailed($exception->validator);
+    //     }
+    // }
+
+    // public function verifyEmail(EmailVerificationRequest $request):User|Response|Null
+    // {
+    //     if($request->user()->hasVerifiedEmail())
+    //     {
+    //         return response([
+    //             'message'=>'User email already verified'
+    //         ]);
+    //     }
+    //     $request->fulfill();
+    //     return Auth::user();
+    // }
 }

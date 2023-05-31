@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Result\ResultCollection;
 use App\Http\Resources\Result\ResultAllResource;
 use App\Http\Resources\Result\ResultResource;
 use App\Services\Result\IndexResult;
@@ -22,11 +23,11 @@ class ResultController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(): JsonResource|JsonResponse
+    public function index(Request $request): JsonResource|JsonResponse
     {
         try {
-            $results = app(IndexResult::class)->execute();
-            return ResultResource::collection($results);
+            $results = app(IndexResult::class)->execute($request);
+            return new ResultCollection($results);
         } catch (ValidationException $exception) {
             return $this->respondValidatorFailed($exception->validator);
         } catch (Exception $exception) {
@@ -51,20 +52,10 @@ class ResultController extends Controller
             return $this->respondNotFound();
         }
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id): JsonResource|JsonResponse
+    public function calculate()
     {
         try {
-            $result=app(ShowResult::class)->execute([
-                'id'=>$id
-            ]);
-            return new ResultAllResource($result);
+            return app(CalculateResult::class)->execute();
         } catch (ValidationException $exception) {
             return $this->respondValidatorFailed($exception->validator);
         } catch (Exception $exception) {
@@ -72,18 +63,10 @@ class ResultController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id): JsonResource|JsonResponse
+    public function calculateQuestion()
     {
         try {
-            // $collections = app(IndexCollection::class)->execute($request->all());
-            // return new CollectionCollection($collections);
+            return app(CalculateQuestionResult::class)->execute();
         } catch (ValidationException $exception) {
             return $this->respondValidatorFailed($exception->validator);
         } catch (Exception $exception) {
@@ -91,17 +74,10 @@ class ResultController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id): JsonResponse
+    public function calculateCollection()
     {
         try {
-            // app(IndexCollection::class)->execute($request->all());
-            // return $this->respondObjectDeleted($id);
+            return app(CalculateCollectionResult::class)->execute();
         } catch (ValidationException $exception) {
             return $this->respondValidatorFailed($exception->validator);
         } catch (Exception $exception) {

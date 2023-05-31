@@ -25,25 +25,7 @@ class AllowedUserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(): JsonResource|JsonResponse
-    {
-        try {
-            $allowed = app(IndexAllowed::class)->execute();
-            return AllowedResource::collection($allowed);
-        } catch (ValidationException $exception) {
-            return $this->respondValidatorFailed($exception->validator);
-        } catch (Exception $exception) {
-            return $this->respondNotFound();
-        }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request): JsonResponse
+     public function store(Request $request): JsonResponse
     {
         try {
             app(StoreAllowed::class)->execute($request->all());
@@ -55,48 +37,7 @@ class AllowedUserController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id): JsonResource|JsonResponse
-    {
-        try {
-            $allowed = app(ShowAllowed::class)->execute([
-                'id' => $id
-            ]);
-            return new AllowedWithCollectionResource($allowed);
-        } catch (ValidationException $exception) {
-            return $this->respondValidatorFailed($exception->validator);
-        } catch (Exception $exception) {
-            return $this->respondNotFound();
-        }
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id):JsonResource|JsonResponse
-    {
-        try {
-            app(UpdateAllowed::class)->execute([
-                'id'=>$id,
-                'user_id'=>$request->user_id,
-                'collection_id'=>$request->collection_id,
-            ]);
-            return new AllowedResource(AllowedUser::find($id));
-        } catch (ValidationException $exception) {
-            return $this->respondValidatorFailed($exception->validator);
-        } catch (Exception $exception) {
-            return $this->respondNotFound();
-        }
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -104,11 +45,11 @@ class AllowedUserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id):JsonResponse
+    public function destroy($id): JsonResponse
     {
         try {
             app(DestroyAllowed::class)->execute([
-                'id'=>$id
+                'id' => $id
             ]);
             return $this->respondObjectDeleted($id);
         } catch (ValidationException $exception) {

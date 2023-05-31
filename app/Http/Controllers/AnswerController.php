@@ -19,29 +19,6 @@ use Illuminate\Validation\ValidationException;
 class AnswerController extends Controller
 {
     use JsonRespondController;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(): JsonResource|JsonResponse
-    {
-        try {
-            $answers = app(IndexAnswer::class)->execute();
-            return AnswerResource::collection($answers);
-        } catch (ValidationException $exception) {
-            return $this->respondValidatorFailed($exception->validator);
-        } catch (Exception $exception) {
-            return $this->respondNotFound();
-        }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request): JsonResource|JsonResponse
     {
         try {
@@ -54,34 +31,7 @@ class AnswerController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id): JsonResource|JsonResponse
-    {
-        try {
-            $answer = app(ShowAnswer::class)->execute([
-                'id' => $id
-            ]);
-            return new AnswerResource($answer);
-        } catch (ValidationException $exception) {
-            return $this->respondValidatorFailed($exception->validator);
-        } catch (Exception $exception) {
-            return $this->respondNotFound();
-        }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id):JsonResource|JsonResponse
+    public function update(Request $request, $id): JsonResource|JsonResponse
     {
         try {
             app(UpdateAnswer::class)->execute([
@@ -104,17 +54,17 @@ class AnswerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id):JsonResponse
+    public function destroy($id): JsonResponse
     {
-        // try {
+        try {
             $answer = app(DestroyAnswer::class)->execute([
                 'id' => $id
             ]);
             return $this->respondObjectDeleted($id);
-        // } catch (ValidationException $exception) {
-        //     return $this->respondValidatorFailed($exception->validator);
-        // } catch (Exception $exception) {
-        //     return $this->respondNotFound();
-        // }
+        } catch (ValidationException $exception) {
+            return $this->respondValidatorFailed($exception->validator);
+        } catch (Exception $exception) {
+            return $this->respondNotFound();
+        }
     }
 }
